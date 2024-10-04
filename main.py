@@ -106,6 +106,41 @@ leaders_per_country
 
 #_____________________________________________________________________________
 
+import requests
+from bs4 import BeautifulSoup
+
+
+leaders_per_country = {}
+
+def get_leader():
+    
+    url = 'https://country-leaders.onrender.com'
+    cookie = requests.get(url + '/cookie').cookies
+    countries = requests.get(url + '/countries', cookies = cookie).json()
+
+    for i in countries:
+        leaders_per_country[i]= requests.get(leaders_url, cookies = cookie, params={"country":i}).json()
+
+get_leader()
+
+leaders_per_country
+wikipedia_of_leader_link = leaders_per_country['be'][7]['wikipedia_url']  # wikipedia link of 8th leader of Belgium 
+print(wikipedia_of_leader_link)
+
+
+def get_first_paragraph(wikipedia_url):
+    #print(wikipedia_url) # keep this for the rest of the notebook
+    
+    html_doc = requests.get(wikipedia_url).text # works only if staus code == 200
+    soup = BeautifulSoup(html_doc,"html.parser") 
+    
+    # print(soup.prettify()) 
+    first_paragraph = soup.find("p").get_text()
+
+    print(first_paragraph)
+
+get_first_paragraph(wikipedia_of_leader_link)
+
 
 
 
